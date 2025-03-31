@@ -7,8 +7,8 @@ app = Flask(__name__)
 # Load settings from environment variables or default values
 API_KEY = os.getenv('API_KEY', 'your_openai_api_key')
 API_URL = os.getenv('API_URL', 'https://api.openai.com/v1/engines/davinci-codex/completions')
-OLLAMA_API_URL = os.getenv('OLLAMA_API_URL', 'https://api.ollama.com/v1/score')
-API_PROVIDER = os.getenv('API_PROVIDER', 'openai')  # Default to OpenAI
+OLLAMA_API_URL = os.getenv('OLLAMA_API_URL', 'http://localhost:11434/api/generate')
+API_PROVIDER = os.getenv('API_PROVIDER', 'ollama')  # Default to OpenAI
 
 def get_vibe_score(code):
     headers = {
@@ -16,7 +16,7 @@ def get_vibe_score(code):
         'Content-Type': 'application/json'
     }
     data = {
-        'prompt': f'Rate the following code from 0 to 10:\n\n{code}',
+        'prompt': f'Rate the following code from 0 to 10. Answer only with a number from 0 to 10 and nothing else.\n\n{code}',
         'max_tokens': 1
     }
     response = requests.post(API_URL, headers=headers, json=data)
@@ -34,11 +34,18 @@ def get_ollama_score(code):
         'Content-Type': 'application/json'
     }
     data = {
-        'code': code
+        'model': 'llama2',
+        'prompt': f'Rate the following code from 0 to 10. Answer only with a number from 0 to 10 and nothing else.\n\n{code}',
+        'stream': False
     }
     response = requests.post(OLLAMA_API_URL, headers=headers, json=data)
-    score = response.json()['response']
-    return int(score)
+    response_json = response.json()
+
+    if 'response' in response_json:
+        score = response_json['response'].strip()
+        return int(score)
+    else:
+        raise ValueError("Invalid response from Ollama API: 'response' key not found")
 
 @app.route('/')
 def index():
