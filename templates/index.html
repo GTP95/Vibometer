@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Vibe Score</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .meter {
+            width: 200px;
+            height: 100px;
+            background: #ddd;
+            border-radius: 100px 100px 0 0;
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .needle {
+            width: 2px;
+            height: 100%;
+            background: red;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform-origin: bottom;
+            transform: rotate(0deg);
+            transition: transform 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Vibe Score</h1>
+    <div class="container">
+        <form id="codeForm">
+            <textarea name="code" rows="10" cols="50" placeholder="Enter your code here..."></textarea><br>
+            <button type="submit">Evaluate</button>
+        </form>
+        <div class="meter">
+            <div class="needle" id="needle"></div>
+        </div>
+        <p id="vibeText">Neutral vibes</p>
+        <a href="{{ url_for('settings') }}">Settings</a>
+    </div>
+    <script>
+        document.getElementById('codeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/evaluate', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const score = data.score;
+                const needle = document.getElementById('needle');
+                const vibeText = document.getElementById('vibeText');
+                needle.style.transform = `rotate(${(score - 5) * 18}deg)`;
+                if (score <= 3) {
+                    vibeText.textContent = 'Bad vibes';
+                } else if (score <= 7) {
+                    vibeText.textContent = 'Neutral vibes';
+                } else {
+                    vibeText.textContent = 'Good vibes';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

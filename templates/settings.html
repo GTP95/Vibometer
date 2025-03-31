@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+</head>
+<body>
+    <h1>Settings</h1>
+    <form method="POST">
+        <label for="api_key">API Key:</label><br>
+        <input type="text" id="api_key" name="api_key" value="{{ api_key }}"><br><br>
+        <label for="api_url">API URL:</label><br>
+        <input type="text" id="api_url" name="api_url" value="{{ api_url }}"><br><br>
+        <button type="submit">Save</button>
+    </form>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>
