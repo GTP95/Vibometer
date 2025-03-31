@@ -19,6 +19,8 @@
             <option value="openai" {% if api_provider == 'openai' %}selected{% endif %}>OpenAI</option>
             <option value="ollama" {% if api_provider == 'ollama' %}selected{% endif %}>Ollama</option>
         </select><br><br>
+        <label for="ollama_model">Ollama Model:</label><br>
+        <input type="text" id="ollama_model" name="ollama_model" value="{{ ollama_model }}"><br><br>
         <button type="submit">Save</button>
     </form>
     <a href="{{ url_for('index') }}">Back to Home</a>

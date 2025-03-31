@@ -9,6 +9,7 @@ API_KEY = os.getenv('API_KEY', 'your_openai_api_key')
 API_URL = os.getenv('API_URL', 'https://api.openai.com/v1/engines/davinci-codex/completions')
 OLLAMA_API_URL = os.getenv('OLLAMA_API_URL', 'http://localhost:11434/api/generate')
 API_PROVIDER = os.getenv('API_PROVIDER', 'ollama')  # Default to OpenAI
+OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama2')
 
 def get_vibe_score(code):
     headers = {
@@ -34,7 +35,7 @@ def get_ollama_score(code):
         'Content-Type': 'application/json'
     }
     data = {
-        'model': 'llama2',
+        'model': OLLAMA_MODEL,
         'prompt': f'Rate the following code from 0 to 10. Answer only with a number from 0 to 10 and nothing else.\n\n{code}',
         'stream': False
     }
@@ -62,19 +63,21 @@ def evaluate():
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
-    global API_KEY, API_URL, OLLAMA_API_URL, API_PROVIDER
+    global API_KEY, API_URL, OLLAMA_API_URL, API_PROVIDER, OLLAMA_MODEL
     if request.method == 'POST':
         API_KEY = request.form['api_key']
         API_URL = request.form['api_url']
         OLLAMA_API_URL = request.form['ollama_api_url']
         API_PROVIDER = request.form['api_provider']
+        OLLAMA_MODEL = request.form['ollama_model']
         # Save settings to environment variables or a file
         os.environ['API_KEY'] = API_KEY
         os.environ['API_URL'] = API_URL
         os.environ['OLLAMA_API_URL'] = OLLAMA_API_URL
         os.environ['API_PROVIDER'] = API_PROVIDER
+        os.environ['OLLAMA_MODEL'] = OLLAMA_MODEL
         return redirect(url_for('index'))
-    return render_template('settings.html', api_key=API_KEY, api_url=API_URL, ollama_api_url=OLLAMA_API_URL, api_provider=API_PROVIDER)
+    return render_template('settings.html', api_key=API_KEY, api_url=API_URL, ollama_api_url=OLLAMA_API_URL, api_provider=API_PROVIDER, ollama_model=OLLAMA_MODEL)
 
 if __name__ == '__main__':
     app.run(debug=True)
