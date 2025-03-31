@@ -30,6 +30,20 @@
             transform: rotate(0deg);
             transition: transform 0.5s ease-out;
         }
+        .spinner {
+        display: none;
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     </style>
 </head>
 <body>
@@ -39,6 +53,7 @@
             <textarea name="code" rows="10" cols="50" placeholder="Enter your code here..."></textarea><br>
             <button type="submit">Evaluate</button>
         </form>
+        <div class="spinner" id="spinner"></div>
         <div class="meter">
             <div class="needle" id="needle"></div>
         </div>
@@ -46,28 +61,38 @@
         <a href="{{ url_for('settings') }}">Settings</a>
     </div>
     <script>
-        document.getElementById('codeForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            fetch('/evaluate', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                const score = data.score;
-                const needle = document.getElementById('needle');
-                const vibeText = document.getElementById('vibeText');
-                needle.style.transform = `rotate(${(score - 5) * 18}deg)`;
-                if (score <= 3) {
-                    vibeText.textContent = 'Bad vibes';
-                } else if (score <= 7) {
-                    vibeText.textContent = 'Neutral vibes';
-                } else {
-                    vibeText.textContent = 'Good vibes';
-                }
-            });
+    document.getElementById('codeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const spinner = document.getElementById('spinner');
+        const needle = document.getElementById('needle');
+        const vibeText = document.getElementById('vibeText');
+
+        spinner.style.display = 'block';
+        needle.style.display = 'none';
+        vibeText.textContent = '';
+
+        fetch('/evaluate', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const score = data.score;
+            needle.style.transform = `rotate(${(score - 5) * 18}deg)`;
+            if (score <= 3) {
+                vibeText.textContent = 'Bad vibes';
+            } else if (score <= 7) {
+                vibeText.textContent = 'Neutral vibes';
+            } else {
+                vibeText.textContent = 'Good vibes';
+            }
+        })
+        .finally(() => {
+            spinner.style.display = 'none';
+            needle.style.display = 'block';
         });
-    </script>
+    });
+</script>
 </body>
 </html>
