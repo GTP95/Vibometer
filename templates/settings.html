@@ -12,6 +12,13 @@
         <input type="text" id="api_key" name="api_key" value="{{ api_key }}"><br><br>
         <label for="api_url">API URL:</label><br>
         <input type="text" id="api_url" name="api_url" value="{{ api_url }}"><br><br>
+        <label for="ollama_api_url">Ollama API URL:</label><br>
+        <input type="text" id="ollama_api_url" name="ollama_api_url" value="{{ ollama_api_url }}"><br><br>
+        <label for="api_provider">API Provider:</label><br>
+        <select id="api_provider" name="api_provider">
+            <option value="openai" {% if api_provider == 'openai' %}selected{% endif %}>OpenAI</option>
+            <option value="ollama" {% if api_provider == 'ollama' %}selected{% endif %}>Ollama</option>
+        </select><br><br>
         <button type="submit">Save</button>
     </form>
     <a href="{{ url_for('index') }}">Back to Home</a>
