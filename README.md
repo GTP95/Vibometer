@@ -6,7 +6,7 @@ The higher the score, the better the vibe!
 
 **Note**: this tool is an April fool's joke and should not be taken seriously. While it does what it claims, to add dimensions
 to the joke this tool was itself "vibe-coded", as you can tell from the poor interface quality. So, more than ever,
-*you use this tool at your own risk, I give no guarantee whatsoever*.  
+*you use this tool at your own risk, I give no guarantee whatsoever*. I only tested it with Ollama. 
 
 What follows from here on is an LLM-generated readme for this project.
 
